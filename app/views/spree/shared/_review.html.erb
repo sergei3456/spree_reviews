@@ -1,0 +1,37 @@
+<li itemprop="reviews" itemscope itemtype="http://schema.org/Review">
+  <div class="comment_block">
+    <div class="rating_wrap">
+      <div class="rating">
+        <div class="product_rate" style="width:80%"></div>
+      </div>
+    </div>
+    <p class="customer_meta">
+      <span itemprop="datePublished" content="<%= review.created_at.to_date.to_s %>"></span>
+      <span itemprop="reviewRating" content="<%= review.rating %>"></span>
+      <% if review.show_identifier %>
+        <% if Spree::Reviews::Config[:show_email] && review.user %>
+          <span itemprop="author">
+            <%= review.user.email %>
+          </span>
+        <% else %>
+          <span itemprop="author" class="review_author">
+            <%= review.name %>
+          </span>
+        <% end %>
+      <% else %>
+        <span itemprop="author"><%= Spree.t(:anonymous) %></span>
+      <% end %>
+      <span class="comment-date">
+        <%= l review.created_at.to_date %>
+      </span>
+    </p>
+    <div class="description" itemprop="reviewBody">
+      <%= simple_format(review.review) %>
+    </div>
+  </div>
+  <% if Spree::Reviews::Config[:feedback_rating] && (!Spree::Reviews::Config[:require_login] || spree_current_user) %>
+    <div class="feedback_review" id="feedback_review_<%= review.id %>">
+      <%= render 'spree/feedback_reviews/form', review: review %>
+    </div>
+  <% end %>
+</li>
